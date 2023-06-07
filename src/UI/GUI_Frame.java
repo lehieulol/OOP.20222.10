@@ -25,6 +25,7 @@ public class GUI_Frame extends JFrame{
 		this.output_panel.setSize(this.getWidth()/2, this.getHeight()*7/8);
 		this.panel.add(this.output_panel, BorderLayout.LINE_END);
 		
+		// Choice panel
 		this.choice_panel.setLayout(new FlowLayout(FlowLayout.LEFT, 20, 0));
 		this.choice_panel.add(new JLabel("Number of variables:"));
 		this.choice_panel.add(num_variable);
@@ -41,17 +42,48 @@ public class GUI_Frame extends JFrame{
 		JButton confirm = new JButton("Confirm");
 		confirm.addActionListener(new ConfirmClicked(this));
 		this.choice_panel.add(confirm);
+		
+		// Input panel
+	}
+	
+	// Choice panel event handler
+	
+	private class OptionChanged implements ItemListener{
+		
+		GUI_Frame frame;
+		private OptionChanged(GUI_Frame frame) {
+			this.frame = frame;
+		}
+		
+		@Override
+		public void itemStateChanged(ItemEvent e) {
+			if(e.getStateChange() != ItemEvent.SELECTED) {
+				return;
+			}
+			if(e.getSource() == this.frame.num_variable) {
+				Integer NoV = (Integer) this.frame.num_variable.getSelectedItem();
+				this.frame.input_panel.add()
+			}
+		}
 	}
 	
 	private class ConfirmClicked implements ActionListener{
-		
+		GUI_Frame frame;
 		private ConfirmClicked(GUI_Frame frame) {
-			
+			this.frame = frame;
 		}
 		
 		@Override
 		public void actionPerformed(ActionEvent e) {
+			//Get number of variable:
+			Integer NoV = (Integer) this.frame.num_variable.getSelectedItem();
 			
 		}
+	}
+	
+	// Input panel generator
+	
+	private static JPanel input_panel_generator(Integer NoV) {
+		
 	}
 }
