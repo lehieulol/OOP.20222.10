@@ -39,14 +39,19 @@ public class GUI_Frame extends JFrame{
 		this.choice_panel.add(new JLabel(""));
 		
 		JButton confirm = new JButton("Confirm");
-		confirm.addActionListener(new ActionListener() {
-			@Override
-            public void actionPerformed(ActionEvent e) {
-				
-            }
-		});
+		confirm.addActionListener(new ConfirmClicked(this));
 		this.choice_panel.add(confirm);
 	}
 	
-	
+	private class ConfirmClicked implements ActionListener{
+		
+		private ConfirmClicked(GUI_Frame frame) {
+			
+		}
+		
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			
+		}
+	}
 }
