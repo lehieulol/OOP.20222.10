@@ -8,7 +8,7 @@ public class Solver {
 	 * @param output_type "SOP" or "POS"
 	 * @return
 	 */
-	public int[][] solve(Integer num_of_variable, boolean[] truth_table, String output_type){
+	public int[][] solve(Integer num_of_variable, int[] truth_table, String output_type){
 		return null;
 	}
 }
