@@ -1,6 +1,9 @@
 package UI;
 
 import javax.swing.*;
+
+import Solver.Solver;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.lang.Math.*;
@@ -85,7 +88,8 @@ public class GUI_Frame extends JFrame{
 			//Get number of variable:
 			Integer NoV = (Integer) this.frame.num_variable.getSelectedItem();
 			int[] truth_table = this.frame.getTruthTable();
-			System.out.print(Arrays.toString(truth_table));
+			String output_type = (String) this.frame.output_type.getSelectedItem();
+			Solver.solve(NoV, truth_table, output_type);
 		}
 	}
 	
@@ -142,7 +146,6 @@ public class GUI_Frame extends JFrame{
 		for (Component component : components) {
 			if(component.getClass().isInstance(new JComboBox<Integer>())) {
 				ret[i++] = (int) ((JComboBox<Integer>) component).getSelectedItem();
-				System.out.println(Arrays.toString(ret));
 			}
 		}
 		return ret;
