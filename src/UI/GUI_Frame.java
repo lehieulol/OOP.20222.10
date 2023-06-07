@@ -21,7 +21,7 @@ public class GUI_Frame extends JFrame{
 	
 	public GUI_Frame(String title){
 		super(title);
-		this.setLayout(new BorderLayout());
+		this.panel.setLayout(new BorderLayout());
 		this.add(this.panel);
 		
 		this.choice_panel.setSize(this.getWidth(), this.getHeight()/8);
@@ -52,6 +52,7 @@ public class GUI_Frame extends JFrame{
 		
 		// Input panel
 		this.input_panel.add(GUI_Frame.input_panel_generator((Integer) this.num_variable.getSelectedItem()));
+		
 	}
 	
 	// Choice panel event handler
@@ -89,7 +90,11 @@ public class GUI_Frame extends JFrame{
 			Integer NoV = (Integer) this.frame.num_variable.getSelectedItem();
 			int[] truth_table = this.frame.getTruthTable();
 			String output_type = (String) this.frame.output_type.getSelectedItem();
-			Solver.solve(NoV, truth_table, output_type);
+			int[][] answer = Solver.solve(NoV, truth_table, output_type);
+			this.frame.output_panel.removeAll();
+			this.frame.output_panel.add(output_panel_generator(answer));
+			this.frame.output_panel.revalidate();
+			
 		}
 	}
 	
@@ -147,6 +152,44 @@ public class GUI_Frame extends JFrame{
 			if(component.getClass().isInstance(new JComboBox<Integer>())) {
 				ret[i++] = (int) ((JComboBox<Integer>) component).getSelectedItem();
 			}
+		}
+		return ret;
+	}
+	
+	// Output panel generator
+	private JPanel output_panel_generator(int[][] answer) {
+		JPanel ret = new JPanel();
+		Integer NoV = (Integer) this.num_variable.getSelectedItem();
+		String output_type = (String) this.output_type.getSelectedItem();
+		ret.add(new JLabel("Output:"));
+		if(output_type.equals("SOP")) {
+			StringBuilder sb = new StringBuilder();
+			for (int[] _i : answer) {
+				for (int _j :_i) {
+					sb.append(String.valueOf((char) ('A'+_j%NoV)));
+					if(_j>=NoV) {
+						sb.append('\'');
+					}
+				}
+				sb.append(" + ");	
+			}
+			sb.delete(sb.length() - 3, sb.length() - 1);
+			ret.add(new JTextField(sb.toString()));
+		}else if(output_type.equals("POS")) {
+			StringBuilder sb = new StringBuilder();
+			for (int[] _i : answer) {
+				sb.append("(");
+				for (int _j :_i) {
+					sb.append(String.valueOf((char) ('A'+_j%NoV)));
+					if(_j>=NoV) {
+						sb.append('\'');
+					}
+					sb.append(String.valueOf(" + "));
+				}
+				sb.delete(sb.length() - 3, sb.length() - 1);
+				sb.append(")");	
+			}
+			ret.add(new JTextField(sb.toString()));
 		}
 		return ret;
 	}
