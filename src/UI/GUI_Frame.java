@@ -6,9 +6,8 @@ import Solver.Solver;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.lang.Math.*;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.awt.image.*;
+import java.awt.geom.*;
 
 public class GUI_Frame extends JFrame{
 	private static final long serialVersionUID = 1L;
@@ -16,6 +15,8 @@ public class GUI_Frame extends JFrame{
 	JPanel choice_panel = new JPanel();
 	Integer[] no_of_variable = {3, 4};
 	JComboBox<Integer> num_variable = new JComboBox<Integer>(no_of_variable);
+	String[] _input_type = {"Truth table", "Kmap (SOP)"};
+	JComboBox<String> input_type = new JComboBox<String>(_input_type);
 	String[] _output_type = {"SOP", "POS"};
 	JComboBox<String> output_type = new JComboBox<String>(_output_type);
 	
@@ -31,11 +32,20 @@ public class GUI_Frame extends JFrame{
 		this.output_panel.setSize(this.getWidth()/2, this.getHeight()*7/8);
 		this.panel.add(this.output_panel, BorderLayout.LINE_END);
 		
+		// Test
+		
 		// Choice panel
 		this.choice_panel.setLayout(new FlowLayout(FlowLayout.LEFT, 20, 0));
 		this.choice_panel.add(new JLabel("Number of variables:"));
 		num_variable.addItemListener(new OptionChanged(this));
 		this.choice_panel.add(num_variable);
+		
+		this.choice_panel.add(new JLabel(""));
+		this.choice_panel.add(new JLabel(""));
+		
+		this.choice_panel.add(new JLabel("Input type:"));
+		input_type.addItemListener(new OptionChanged(this));
+		this.choice_panel.add(input_type);
 		
 		this.choice_panel.add(new JLabel(""));
 		this.choice_panel.add(new JLabel(""));
@@ -51,7 +61,7 @@ public class GUI_Frame extends JFrame{
 		this.choice_panel.add(confirm);
 		
 		// Input panel
-		this.input_panel.add(GUI_Frame.input_panel_generator((Integer) this.num_variable.getSelectedItem()));
+		this.input_panel.add(GUI_Frame.input_panel_generator((Integer) this.num_variable.getSelectedItem(), (String) this.input_type.getSelectedItem()));
 		
 	}
 	
@@ -69,10 +79,11 @@ public class GUI_Frame extends JFrame{
 			if(e.getStateChange() != ItemEvent.SELECTED) {
 				return;
 			}
-			if(e.getSource() == this.frame.num_variable) {
+			if(e.getSource() == this.frame.num_variable || e.getSource() == this.frame.input_type) {
 				Integer NoV = (Integer) this.frame.num_variable.getSelectedItem();
+				String iT = (String) this.frame.input_type.getSelectedItem();
 				this.frame.input_panel.remove(0);
-				this.frame.input_panel.add(input_panel_generator(NoV));
+				this.frame.input_panel.add(input_panel_generator(NoV, iT));
 				this.frame.input_panel.revalidate();
 			}
 		}
@@ -90,8 +101,10 @@ public class GUI_Frame extends JFrame{
 			Integer NoV = (Integer) this.frame.num_variable.getSelectedItem();
 			int[] truth_table = this.frame.getTruthTable();
 			String output_type = (String) this.frame.output_type.getSelectedItem();
-			int[][] answer = Solver.solve(NoV, truth_table, output_type);
+			JPanel process = new JPanel();
+			int[][] answer = Solver.solve(NoV, truth_table, output_type, process);
 			this.frame.output_panel.removeAll();
+			this.frame.output_panel.add(process);
 			this.frame.output_panel.add(output_panel_generator(answer));
 			this.frame.output_panel.revalidate();
 			
@@ -100,49 +113,93 @@ public class GUI_Frame extends JFrame{
 	
 	// Input panel generator
 	
-	private static JPanel input_panel_generator(Integer NoV) {
+	
+	private static JPanel input_panel_generator(Integer NoV, String iT) {
 		JPanel ret = new JPanel();
 		ret.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.fill = GridBagConstraints.NONE;
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.gridheight = 1;
-        gbc.gridwidth = NoV;
-        ret.add(new JLabel("X"), gbc);
-        
-        gbc.gridx = NoV;
-        gbc.gridy = 0;
-        gbc.gridheight = 2;
-        gbc.gridwidth = 1;
-        ret.add(new JLabel("Y"), gbc);
-        
-        if (NoV > 4 || NoV <= 0) {
-        	return null;
-        }
-        
-        gbc.gridheight = 1;
-        gbc.gridwidth = 1;
-        for (int _i = 0; _i < NoV; _i++) {
-        	gbc.gridy = 1;
-        	gbc.gridx = _i;
-        	ret.add(new JLabel(String.valueOf((char)('A'+_i))), gbc);
-        }
-        
-        for (int _j = 0; _j < (int) Math.pow(2, NoV); _j++) {
-        	gbc.gridy = _j+2;
-        	for (int _i = 0; _i < NoV; _i++) {
-            	gbc.gridx = _i;
-            	ret.add(new JLabel(String.valueOf(_j/(int) Math.pow(2, NoV-_i-1)%2)), gbc);
-        	}
-        	gbc.gridx = NoV;
-        	Integer[] tmp = {0, 1};
-        	ret.add(new JComboBox<Integer>(tmp), gbc);
-        }
-        
+		if(iT.equals("Truth table")) {
+	        gbc.fill = GridBagConstraints.NONE;
+	        gbc.gridx = 0;
+	        gbc.gridy = 0;
+	        gbc.gridheight = 1;
+	        gbc.gridwidth = NoV;
+	        ret.add(new JLabel("X"), gbc);
+	        
+	        gbc.gridx = NoV;
+	        gbc.gridy = 0;
+	        gbc.gridheight = 2;
+	        gbc.gridwidth = 1;
+	        ret.add(new JLabel("Y"), gbc);
+	        
+	        if (NoV > 4 || NoV <= 0) {
+	        	return null;
+	        }
+	        
+	        gbc.gridheight = 1;
+	        gbc.gridwidth = 1;
+	        for (int _i = 0; _i < NoV; _i++) {
+	        	gbc.gridy = 1;
+	        	gbc.gridx = _i;
+	        	ret.add(new JLabel(String.valueOf((char)('A'+_i))), gbc);
+	        }
+	        
+	        for (int _j = 0; _j < (int) Math.pow(2, NoV); _j++) {
+	        	gbc.gridy = _j+2;
+	        	for (int _i = 0; _i < NoV; _i++) {
+	            	gbc.gridx = _i;
+	            	ret.add(new JLabel(String.valueOf(_j/(int) Math.pow(2, NoV-_i-1)%2)), gbc);
+	        	}
+	        	gbc.gridx = NoV;
+	        	Integer[] tmp = {0, 1};
+	        	ret.add(new JComboBox<Integer>(tmp), gbc);
+	        }
+	        
+		}else if(iT.equals("Kmap (SOP)")) {
+	        gbc.fill = GridBagConstraints.NONE;
+	        gbc.gridx = 0;
+	        int column_variables = (NoV+1)/2, row_variables = NoV-column_variables;
+	        int convert[] = {1, 2, 4, 3};
+	        for (int i = 0; i < (int) Math.pow(2, column_variables); i++) {
+	        	String tmp = "";
+	        	gbc.gridy = convert[i];
+	        	for(int j = 0; j < column_variables; j++) {
+	        		tmp += (char) ('A'+j);
+	        		if(i/(int) Math.pow(2, j)%2==0) {
+	        			tmp += '\u0305';
+	        		}
+	        	}
+	        	JLabel temp = new JLabel(tmp);
+	        	ret.add(temp, gbc);
+	        }
+	        gbc.gridy = 0;
+	        for (int i = 0; i < (int) Math.pow(2, row_variables); i++) {
+	        	String tmp = "";
+	        	gbc.gridx = convert[i];
+	        	for(int j = 0; j < row_variables; j++) {
+	        		tmp += (char) ('A'+column_variables+j);
+	        		if(i/(int) Math.pow(2, j)%2==0) {
+	        			tmp += '\u0305';
+	        		}
+	        	}
+	        	JLabel temp = new JLabel(tmp);
+	        	ret.add(temp, gbc);
+	        }
+	        for (int i = 0; i < (int) Math.pow(2, column_variables); i++) {
+	        	gbc.gridy = convert[i];
+	        	for (int i1 = 0; i1 < (int) Math.pow(2, row_variables); i1++) {
+		        	gbc.gridx = convert[i1];
+	        		Integer[] tmp = {0, 1};
+		        	ret.add(new JComboBox<Integer>(tmp), gbc);
+	        	}
+	        }
+		}
+		
         return ret;
 	}
 
+	
+	@SuppressWarnings("unchecked")
 	public int[] getTruthTable() {
 		Component[] components = ((Container) this.input_panel.getComponents()[0]).getComponents();
 		int NoV = (int) this.num_variable.getSelectedItem();
@@ -159,38 +216,119 @@ public class GUI_Frame extends JFrame{
 	// Output panel generator
 	private JPanel output_panel_generator(int[][] answer) {
 		JPanel ret = new JPanel();
+		ret.setLayout(new BoxLayout(ret, BoxLayout.Y_AXIS));
 		Integer NoV = (Integer) this.num_variable.getSelectedItem();
 		String output_type = (String) this.output_type.getSelectedItem();
 		ret.add(new JLabel("Output:"));
+		StringBuilder sb = new StringBuilder();
 		if(output_type.equals("SOP")) {
-			StringBuilder sb = new StringBuilder();
 			for (int[] _i : answer) {
 				for (int _j :_i) {
 					sb.append(String.valueOf((char) ('A'+_j%NoV)));
 					if(_j>=NoV) {
-						sb.append('\'');
+						sb.append('\u0305');
 					}
 				}
 				sb.append(" + ");	
 			}
 			sb.delete(sb.length() - 3, sb.length() - 1);
-			ret.add(new JTextField(sb.toString()));
 		}else if(output_type.equals("POS")) {
-			StringBuilder sb = new StringBuilder();
 			for (int[] _i : answer) {
 				sb.append("(");
 				for (int _j :_i) {
 					sb.append(String.valueOf((char) ('A'+_j%NoV)));
 					if(_j>=NoV) {
-						sb.append('\'');
+						sb.append('\u0305');
 					}
 					sb.append(String.valueOf(" + "));
 				}
 				sb.delete(sb.length() - 3, sb.length() - 1);
 				sb.append(")");	
 			}
-			ret.add(new JTextField(sb.toString()));
 		}
+		JTextField tmp = new JTextField(sb.toString());
+		tmp.setFont(new Font("TimesRoman", Font.BOLD, 20));
+		ret.add(tmp);
+		ret.add(new JLabel(new ImageIcon(draw_logic_circuit(answer))));
+		return ret;
+	}
+	
+	private BufferedImage draw_logic_circuit(int[][] answer) {
+		Integer NoV = (Integer) this.num_variable.getSelectedItem();
+		String output_type = (String) this.output_type.getSelectedItem();
+		
+		double DISTANCE_BETWEEN_COLUMN = 25;
+		double DISTANCE_BETWEEN_ROW = 25, DISTANCE_BETWEEN_ROW_GROUP = 60, DOT_SIZE = 7;
+		
+		double imageHeight = 0, imageWidth = 0;
+		imageHeight += 150;
+		imageHeight += (answer.length-1)*DISTANCE_BETWEEN_ROW_GROUP;
+		for (int[] i:answer) {
+			imageHeight += (i.length-1)*DISTANCE_BETWEEN_ROW;
+		}
+		imageWidth += NoV*2*DISTANCE_BETWEEN_COLUMN;
+		imageWidth += 300;
+		
+		BufferedImage ret = new BufferedImage((int) imageWidth, (int) imageHeight, BufferedImage.TYPE_3BYTE_BGR);
+		
+		Graphics2D g2d = ret.createGraphics();
+		Rectangle2D.Double r = new Rectangle2D.Double(0,0,imageWidth, imageHeight);
+		g2d.setColor(new Color(245, 245, 245));
+		g2d.fill(r);
+		
+		g2d.setColor(Color.BLACK);
+		g2d.setFont(new Font("TimesRoman", Font.BOLD, 20));
+		
+		for(int i = 0; i < 2*NoV; i++) {
+			g2d.draw(new Line2D.Double(DISTANCE_BETWEEN_COLUMN*(i+1), 50, DISTANCE_BETWEEN_COLUMN*(i+1), imageHeight-50));
+			if(i%2==1) {
+				g2d.drawString(String.valueOf((char)('A'+i/2))+"'",(int) DISTANCE_BETWEEN_COLUMN*(i+1)-6, 45);
+			}else {
+				g2d.drawString(String.valueOf((char)('A'+i/2)),(int) DISTANCE_BETWEEN_COLUMN*(i+1)-5, 45);
+			}
+		}
+		if(answer.length > 1) {
+			if(output_type.equals("SOP")) {
+				g2d.fill(new OR_Shape(imageWidth-125, (imageHeight-DISTANCE_BETWEEN_ROW*(answer.length))/2, answer.length));
+			}else if(output_type.equals("POS")){
+				g2d.fill(new AND_Shape(imageWidth-125, (imageHeight-DISTANCE_BETWEEN_ROW*(answer.length))/2, answer.length));
+			}
+		}else {
+			g2d.draw(new Line2D.Double(imageWidth-125, imageHeight/2, imageWidth-75, imageHeight/2));
+		}
+		g2d.draw(new Line2D.Double(imageWidth-75, imageHeight/2, imageWidth-25, imageHeight/2));
+		g2d.fillPolygon(new int[]{(int) (imageWidth-25), (int) (imageWidth-37), (int) (imageWidth-37)},new int[]{(int) (imageHeight/2), (int) (imageHeight/2+7), (int) (imageHeight/2-7)},3);
+		
+		double currentImageHeight = 75;
+		int group = 0;
+		for(int[] i:answer) {	
+			if(i.length > 1) {
+				if(output_type.equals("SOP")) {
+					g2d.fill(new AND_Shape(imageWidth-250, currentImageHeight-DISTANCE_BETWEEN_ROW/2, i.length));
+				}else if(output_type.equals("POS")) {
+					g2d.fill(new OR_Shape(imageWidth-250, currentImageHeight-DISTANCE_BETWEEN_ROW/2, i.length));
+				}
+			}else {
+				g2d.draw(new Line2D.Double(imageWidth-250, currentImageHeight, imageWidth-200, currentImageHeight));
+			}
+			double temp = Math.abs((2*group+1-answer.length)/2)*DISTANCE_BETWEEN_COLUMN/2;
+			g2d.draw(new Line2D.Double(imageWidth-200, currentImageHeight+(i.length-1)*DISTANCE_BETWEEN_ROW/2, imageWidth-160+temp, currentImageHeight+(i.length-1)*DISTANCE_BETWEEN_ROW/2));
+			g2d.draw(new Line2D.Double(imageWidth-160+temp, currentImageHeight+(i.length-1)*DISTANCE_BETWEEN_ROW/2, imageWidth-160+temp, (imageHeight-DISTANCE_BETWEEN_ROW*(answer.length-2*group-1))/2));
+			g2d.draw(new Line2D.Double(imageWidth-160+temp, (imageHeight-DISTANCE_BETWEEN_ROW*(answer.length-2*group-1))/2, imageWidth-125, (imageHeight-DISTANCE_BETWEEN_ROW*(answer.length-2*group-1))/2));
+			group++;
+			for(int j:i) {
+				int pos = j%NoV*2;
+				if (j >= NoV) {
+					pos++;
+				}
+				g2d.fill(new Ellipse2D.Double(DISTANCE_BETWEEN_COLUMN*(pos+1) - DOT_SIZE/2, currentImageHeight - DOT_SIZE/2, DOT_SIZE, DOT_SIZE));
+				g2d.draw(new Line2D.Double(DISTANCE_BETWEEN_COLUMN*(pos+1), currentImageHeight, imageWidth-250, currentImageHeight));
+				currentImageHeight += DISTANCE_BETWEEN_ROW;
+			}
+			currentImageHeight += DISTANCE_BETWEEN_ROW_GROUP-DISTANCE_BETWEEN_ROW;
+			
+		}
+		
 		return ret;
 	}
 }
