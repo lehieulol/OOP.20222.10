@@ -61,8 +61,35 @@ public class GUI_Frame extends JFrame{
 		this.choice_panel.add(confirm);
 		
 		// Input panel
-		this.input_panel.add(GUI_Frame.input_panel_generator((Integer) this.num_variable.getSelectedItem(), (String) this.input_type.getSelectedItem()));
+		this.input_panel.add(GUI_Frame.input_panel_generator(this.getNoV(), this.getInputType()));
 		
+	}
+	
+	// Getter
+	public Integer getNoV() {
+		return (Integer) this.num_variable.getSelectedItem();
+	}
+	
+	public String getInputType() {
+		return (String) this.input_type.getSelectedItem();
+	}
+	
+	public String getOutputType() {
+		return (String) this.output_type.getSelectedItem();
+	}
+	
+	@SuppressWarnings("unchecked")
+	public int[] getTruthTable() {
+		Component[] components = ((Container) this.input_panel.getComponents()[0]).getComponents();
+		int NoV = (int) this.num_variable.getSelectedItem();
+		int[] ret = new int[(int) Math.pow(2, NoV)];
+		int i = 0;
+		for (Component component : components) {
+			if(component.getClass().isInstance(new JComboBox<Integer>())) {
+				ret[i++] = (int) ((JComboBox<Integer>) component).getSelectedItem();
+			}
+		}
+		return ret;
 	}
 	
 	// Choice panel event handler
@@ -80,8 +107,8 @@ public class GUI_Frame extends JFrame{
 				return;
 			}
 			if(e.getSource() == this.frame.num_variable || e.getSource() == this.frame.input_type) {
-				Integer NoV = (Integer) this.frame.num_variable.getSelectedItem();
-				String iT = (String) this.frame.input_type.getSelectedItem();
+				Integer NoV = this.frame.getNoV();
+				String iT = this.frame.getInputType();
 				this.frame.input_panel.remove(0);
 				this.frame.input_panel.add(input_panel_generator(NoV, iT));
 				this.frame.input_panel.revalidate();
@@ -98,14 +125,14 @@ public class GUI_Frame extends JFrame{
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			//Get number of variable:
-			Integer NoV = (Integer) this.frame.num_variable.getSelectedItem();
+			Integer NoV = this.frame.getNoV();
 			int[] truth_table = this.frame.getTruthTable();
-			String output_type = (String) this.frame.output_type.getSelectedItem();
+			String output_type = this.frame.getOutputType();
 			JPanel process = new JPanel();
 			int[][] answer = Solver.solve(NoV, truth_table, output_type, process);
 			this.frame.output_panel.removeAll();
 			this.frame.output_panel.add(process);
-			this.frame.output_panel.add(output_panel_generator(answer));
+			this.frame.output_panel.add(output_panel_generator(answer, NoV, output_type));
 			this.frame.output_panel.revalidate();
 			
 		}
@@ -113,24 +140,25 @@ public class GUI_Frame extends JFrame{
 	
 	// Input panel generator
 	
-	
 	private static JPanel input_panel_generator(Integer NoV, String iT) {
 		JPanel ret = new JPanel();
 		ret.setLayout(new GridBagLayout());
+		ret.setBackground(Color.BLACK);
         GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.insets = new Insets(1,1,1,1);
 		if(iT.equals("Truth table")) {
-	        gbc.fill = GridBagConstraints.NONE;
 	        gbc.gridx = 0;
 	        gbc.gridy = 0;
 	        gbc.gridheight = 1;
 	        gbc.gridwidth = NoV;
-	        ret.add(new JLabel("X"), gbc);
+	        ret.add(new JLabel("X", JLabel.CENTER), gbc);
 	        
 	        gbc.gridx = NoV;
 	        gbc.gridy = 0;
 	        gbc.gridheight = 2;
 	        gbc.gridwidth = 1;
-	        ret.add(new JLabel("Y"), gbc);
+	        ret.add(new JLabel("Y", JLabel.CENTER), gbc);
 	        
 	        if (NoV > 4 || NoV <= 0) {
 	        	return null;
@@ -141,22 +169,20 @@ public class GUI_Frame extends JFrame{
 	        for (int _i = 0; _i < NoV; _i++) {
 	        	gbc.gridy = 1;
 	        	gbc.gridx = _i;
-	        	ret.add(new JLabel(String.valueOf((char)('A'+_i))), gbc);
+	        	ret.add(new JLabel(String.valueOf((char)('A'+_i)), JLabel.CENTER), gbc);
 	        }
 	        
 	        for (int _j = 0; _j < (int) Math.pow(2, NoV); _j++) {
 	        	gbc.gridy = _j+2;
 	        	for (int _i = 0; _i < NoV; _i++) {
 	            	gbc.gridx = _i;
-	            	ret.add(new JLabel(String.valueOf(_j/(int) Math.pow(2, NoV-_i-1)%2)), gbc);
+	            	ret.add(new JLabel(String.valueOf(_j/(int) Math.pow(2, NoV-_i-1)%2), JLabel.CENTER), gbc);
 	        	}
 	        	gbc.gridx = NoV;
 	        	Integer[] tmp = {0, 1};
 	        	ret.add(new JComboBox<Integer>(tmp), gbc);
 	        }
-	        
 		}else if(iT.equals("Kmap (SOP)")) {
-	        gbc.fill = GridBagConstraints.NONE;
 	        gbc.gridx = 0;
 	        int column_variables = (NoV+1)/2, row_variables = NoV-column_variables;
 	        int convert[] = {1, 2, 4, 3};
@@ -169,7 +195,7 @@ public class GUI_Frame extends JFrame{
 	        			tmp += '\u0305';
 	        		}
 	        	}
-	        	JLabel temp = new JLabel(tmp);
+	        	JLabel temp = new JLabel(tmp, JLabel.CENTER);
 	        	ret.add(temp, gbc);
 	        }
 	        gbc.gridy = 0;
@@ -182,7 +208,7 @@ public class GUI_Frame extends JFrame{
 	        			tmp += '\u0305';
 	        		}
 	        	}
-	        	JLabel temp = new JLabel(tmp);
+	        	JLabel temp = new JLabel(tmp, JLabel.CENTER);
 	        	ret.add(temp, gbc);
 	        }
 	        for (int i = 0; i < (int) Math.pow(2, column_variables); i++) {
@@ -194,31 +220,19 @@ public class GUI_Frame extends JFrame{
 	        	}
 	        }
 		}
+		// Set Font
+		for(Component cpn:ret.getComponents()) {
+        	((JComponent) cpn).setOpaque(true);
+    		cpn.setFont(new Font("TimesRoman", Font.BOLD, 18));
+        }
 		
         return ret;
 	}
-
-	
-	@SuppressWarnings("unchecked")
-	public int[] getTruthTable() {
-		Component[] components = ((Container) this.input_panel.getComponents()[0]).getComponents();
-		int NoV = (int) this.num_variable.getSelectedItem();
-		int[] ret = new int[(int) Math.pow(2, NoV)];
-		int i = 0;
-		for (Component component : components) {
-			if(component.getClass().isInstance(new JComboBox<Integer>())) {
-				ret[i++] = (int) ((JComboBox<Integer>) component).getSelectedItem();
-			}
-		}
-		return ret;
-	}
 	
 	// Output panel generator
-	private JPanel output_panel_generator(int[][] answer) {
+	private JPanel output_panel_generator(int[][] answer, Integer NoV, String output_type) {
 		JPanel ret = new JPanel();
 		ret.setLayout(new BoxLayout(ret, BoxLayout.Y_AXIS));
-		Integer NoV = (Integer) this.num_variable.getSelectedItem();
-		String output_type = (String) this.output_type.getSelectedItem();
 		ret.add(new JLabel("Output:"));
 		StringBuilder sb = new StringBuilder();
 		if(output_type.equals("SOP")) {
@@ -249,16 +263,13 @@ public class GUI_Frame extends JFrame{
 		JTextField tmp = new JTextField(sb.toString());
 		tmp.setFont(new Font("TimesRoman", Font.BOLD, 20));
 		ret.add(tmp);
-		ret.add(new JLabel(new ImageIcon(draw_logic_circuit(answer))));
+		ret.add(new JLabel(new ImageIcon(draw_logic_circuit(answer, NoV, output_type))));
 		return ret;
 	}
 	
-	private BufferedImage draw_logic_circuit(int[][] answer) {
-		Integer NoV = (Integer) this.num_variable.getSelectedItem();
-		String output_type = (String) this.output_type.getSelectedItem();
-		
+	private BufferedImage draw_logic_circuit(int[][] answer, Integer NoV, String output_type) {		
 		double DISTANCE_BETWEEN_COLUMN = 25;
-		double DISTANCE_BETWEEN_ROW = 25, DISTANCE_BETWEEN_ROW_GROUP = 60, DOT_SIZE = 7;
+		double DISTANCE_BETWEEN_ROW = 25, DISTANCE_BETWEEN_ROW_GROUP = 60, DOT_SIZE = 7, ARROWHEAD_SIZEX = 12, ARROWHEAD_SIZEY = 7;
 		
 		double imageHeight = 0, imageWidth = 0;
 		imageHeight += 150;
@@ -282,9 +293,9 @@ public class GUI_Frame extends JFrame{
 		for(int i = 0; i < 2*NoV; i++) {
 			g2d.draw(new Line2D.Double(DISTANCE_BETWEEN_COLUMN*(i+1), 50, DISTANCE_BETWEEN_COLUMN*(i+1), imageHeight-50));
 			if(i%2==1) {
-				g2d.drawString(String.valueOf((char)('A'+i/2))+"'",(int) DISTANCE_BETWEEN_COLUMN*(i+1)-6, 45);
+				g2d.drawString(String.valueOf((char)('A'+i/2))+"\u0305",(int) DISTANCE_BETWEEN_COLUMN*(i+1)-6, 45);
 			}else {
-				g2d.drawString(String.valueOf((char)('A'+i/2)),(int) DISTANCE_BETWEEN_COLUMN*(i+1)-5, 45);
+				g2d.drawString(String.valueOf((char)('A'+i/2)),(int) DISTANCE_BETWEEN_COLUMN*(i+1)-6, 45);
 			}
 		}
 		if(answer.length > 1) {
@@ -297,7 +308,7 @@ public class GUI_Frame extends JFrame{
 			g2d.draw(new Line2D.Double(imageWidth-125, imageHeight/2, imageWidth-75, imageHeight/2));
 		}
 		g2d.draw(new Line2D.Double(imageWidth-75, imageHeight/2, imageWidth-25, imageHeight/2));
-		g2d.fillPolygon(new int[]{(int) (imageWidth-25), (int) (imageWidth-37), (int) (imageWidth-37)},new int[]{(int) (imageHeight/2), (int) (imageHeight/2+7), (int) (imageHeight/2-7)},3);
+		g2d.fillPolygon(new int[]{(int) (imageWidth-25), (int) (imageWidth-25-ARROWHEAD_SIZEX), (int) (imageWidth-25-ARROWHEAD_SIZEX)},new int[]{(int) (imageHeight/2), (int) (imageHeight/2+ARROWHEAD_SIZEY), (int) (imageHeight/2-ARROWHEAD_SIZEY)},3);
 		
 		double currentImageHeight = 75;
 		int group = 0;
