@@ -23,8 +23,10 @@ public class GUI_Frame extends JFrame{
 	
 	public GUI_Frame(String title){
 		super(title);
+		Container cp = getContentPane();
+		
 		this.panel.setLayout(new BorderLayout());
-		this.add(this.panel);
+		cp.add(this.panel);
 		
 		this.choice_panel.setSize(this.getWidth(), this.getHeight()/8);
 		this.panel.add(this.choice_panel, BorderLayout.PAGE_START);
@@ -87,9 +89,16 @@ public class GUI_Frame extends JFrame{
 		int i = 0;
 		for (Component component : components) {
 			if(component.getClass().isInstance(new JComboBox<Integer>())) {
-				if ((int) ((JComboBox<Integer>) component).getSelectedItem() == 1) {
-					tmp_ali.add(i);
+				if (getOutputType().equals("SOP")) {
+					if ((int) ((JComboBox<Integer>) component).getSelectedItem() == 1) {
+						tmp_ali.add(i);
+					}
+				}else if(getOutputType().equals("POS")) {
+					if ((int) ((JComboBox<Integer>) component).getSelectedItem() == 0) {
+						tmp_ali.add(i);
+					}
 				}
+				
 				i++;
 			}
 		}
@@ -146,13 +155,13 @@ public class GUI_Frame extends JFrame{
         gbc.fill = GridBagConstraints.BOTH;
         gbc.insets = new Insets(1,1,1,1);
 		if(iT.equals("Truth table")) {
-	        gbc.gridx = 0;
+	        gbc.gridx = 1;
 	        gbc.gridy = 0;
 	        gbc.gridheight = 1;
 	        gbc.gridwidth = NoV;
 	        ret.add(new JLabel("X", JLabel.CENTER), gbc);
 	        
-	        gbc.gridx = NoV;
+	        gbc.gridx = NoV+1;
 	        gbc.gridy = 0;
 	        gbc.gridheight = 2;
 	        gbc.gridwidth = 1;
@@ -166,17 +175,19 @@ public class GUI_Frame extends JFrame{
 	        gbc.gridwidth = 1;
 	        for (int _i = 0; _i < NoV; _i++) {
 	        	gbc.gridy = 1;
-	        	gbc.gridx = _i;
+	        	gbc.gridx = _i+1;
 	        	ret.add(new JLabel(String.valueOf((char)('A'+_i)), JLabel.CENTER), gbc);
 	        }
 	        
 	        for (int _j = 0; _j < (int) Math.pow(2, NoV); _j++) {
 	        	gbc.gridy = _j+2;
+	        	gbc.gridx = 0;
+	        	ret.add(new JLabel(String.valueOf(_j), JLabel.CENTER), gbc);
 	        	for (int _i = 0; _i < NoV; _i++) {
-	            	gbc.gridx = _i;
+	            	gbc.gridx = _i+1;
 	            	ret.add(new JLabel(String.valueOf(_j/(int) Math.pow(2, NoV-_i-1)%2), JLabel.CENTER), gbc);
 	        	}
-	        	gbc.gridx = NoV;
+	        	gbc.gridx = NoV+1;
 	        	Integer[] tmp = {0, 1};
 	        	ret.add(new JComboBox<Integer>(tmp), gbc);
 	        }
@@ -243,7 +254,7 @@ public class GUI_Frame extends JFrame{
 				}
 				sb.append(" + ");	
 			}
-			sb.delete(sb.length() - 3, sb.length() - 1);
+			sb.delete(sb.length() - 3, sb.length());
 		}else if(output_type.equals("POS")) {
 			for (int[] _i : answer) {
 				sb.append("(");
@@ -254,7 +265,7 @@ public class GUI_Frame extends JFrame{
 					}
 					sb.append(String.valueOf(" + "));
 				}
-				sb.delete(sb.length() - 3, sb.length() - 1);
+				sb.delete(sb.length() - 3, sb.length());
 				sb.append(")");	
 			}
 		}
