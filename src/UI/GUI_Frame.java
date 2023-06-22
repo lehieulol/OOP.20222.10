@@ -37,14 +37,14 @@ public class GUI_Frame extends JFrame{
 		// Choice panel
 		this.choice_panel.setLayout(new FlowLayout(FlowLayout.LEFT, 20, 0));
 		this.choice_panel.add(new JLabel("Number of variables:"));
-		num_variable.addItemListener(new OptionChanged(this));
+		num_variable.addItemListener(new OptionChanged());
 		this.choice_panel.add(num_variable);
 		
 		this.choice_panel.add(new JLabel(""));
 		this.choice_panel.add(new JLabel(""));
 		
 		this.choice_panel.add(new JLabel("Input type:"));
-		input_type.addItemListener(new OptionChanged(this));
+		input_type.addItemListener(new OptionChanged());
 		this.choice_panel.add(input_type);
 		
 		this.choice_panel.add(new JLabel(""));
@@ -57,7 +57,7 @@ public class GUI_Frame extends JFrame{
 		this.choice_panel.add(new JLabel(""));
 		
 		JButton confirm = new JButton("Confirm");
-		confirm.addActionListener(new ConfirmClicked(this));
+		confirm.addActionListener(new ConfirmClicked());
 		this.choice_panel.add(confirm);
 		
 		// Input panel
@@ -96,44 +96,34 @@ public class GUI_Frame extends JFrame{
 	
 	private class OptionChanged implements ItemListener{
 		
-		GUI_Frame frame;
-		private OptionChanged(GUI_Frame frame) {
-			this.frame = frame;
-		}
-		
 		@Override
 		public void itemStateChanged(ItemEvent e) {
 			if(e.getStateChange() != ItemEvent.SELECTED) {
 				return;
 			}
-			if(e.getSource() == this.frame.num_variable || e.getSource() == this.frame.input_type) {
-				Integer NoV = this.frame.getNoV();
-				String iT = this.frame.getInputType();
-				this.frame.input_panel.remove(0);
-				this.frame.input_panel.add(input_panel_generator(NoV, iT));
-				this.frame.input_panel.revalidate();
+			if(e.getSource() == num_variable || e.getSource() == input_type) {
+				Integer NoV = getNoV();
+				String iT = getInputType();
+				input_panel.remove(0);
+				input_panel.add(input_panel_generator(NoV, iT));
+				input_panel.revalidate();
 			}
 		}
 	}
 	
 	private class ConfirmClicked implements ActionListener{
-		GUI_Frame frame;
-		private ConfirmClicked(GUI_Frame frame) {
-			this.frame = frame;
-		}
-		
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			//Get number of variable:
-			Integer NoV = this.frame.getNoV();
-			int[] truth_table = this.frame.getTruthTable();
-			String output_type = this.frame.getOutputType();
+			Integer NoV = getNoV();
+			int[] truth_table = getTruthTable();
+			String output_type = getOutputType();
 			JPanel process = new JPanel();
 			int[][] answer = Solver.solve(NoV, truth_table, output_type, process);
-			this.frame.output_panel.removeAll();
-			this.frame.output_panel.add(process);
-			this.frame.output_panel.add(output_panel_generator(answer, NoV, output_type));
-			this.frame.output_panel.revalidate();
+			output_panel.removeAll();
+			output_panel.add(process);
+			output_panel.add(output_panel_generator(answer, NoV, output_type));
+			output_panel.revalidate();
 			
 		}
 	}
