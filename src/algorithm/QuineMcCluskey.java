@@ -628,7 +628,16 @@ public class QuineMcCluskey {
 		
 		ArrayList<ArrayList<Integer>> implicants = new ArrayList<ArrayList<Integer>>();
 		
-		ArrayList<ArrayList<Integer>> tempImplicants = this.primeImplicants(third,second);
+		ArrayList<ArrayList<Integer>> tempImplicants = this.primeImplicants(second,tempo);
+		for(ArrayList<Integer> i: tempImplicants) {
+			Collections.sort(i);
+			if(implicants.contains(i)) {
+				continue;
+			}
+			implicants.add(i);
+		}
+		//ArrayList<ArrayList<Integer>> 
+		tempImplicants = this.primeImplicants(third,second);
 		for(ArrayList<Integer> i: tempImplicants) {
 			Collections.sort(i);
 			if(implicants.contains(i)) {
