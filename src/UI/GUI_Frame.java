@@ -7,6 +7,7 @@ import Solver.Solver;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.*;
+import java.util.ArrayList;
 import java.awt.geom.*;
 
 public class GUI_Frame extends JFrame{
@@ -81,13 +82,20 @@ public class GUI_Frame extends JFrame{
 	@SuppressWarnings("unchecked")
 	public int[] getTruthTable() {
 		Component[] components = ((Container) this.input_panel.getComponents()[0]).getComponents();
-		int NoV = (int) this.num_variable.getSelectedItem();
-		int[] ret = new int[(int) Math.pow(2, NoV)];
+		ArrayList<Integer> tmp_ali = new ArrayList<Integer>();
+		
 		int i = 0;
 		for (Component component : components) {
 			if(component.getClass().isInstance(new JComboBox<Integer>())) {
-				ret[i++] = (int) ((JComboBox<Integer>) component).getSelectedItem();
+				if ((int) ((JComboBox<Integer>) component).getSelectedItem() == 1) {
+					tmp_ali.add(i);
+				}
+				i++;
 			}
+		}
+		int[] ret = new int[tmp_ali.size()];
+		for (int i1 = 0; i1 < ret.length; i1++) {
+			ret[i1] = tmp_ali.get(i1);
 		}
 		return ret;
 	}
