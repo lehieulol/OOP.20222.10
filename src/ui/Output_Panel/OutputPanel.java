@@ -1,29 +1,30 @@
 package ui.Output_Panel;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Graphics2D;
-import java.awt.geom.Ellipse2D;
-import java.awt.geom.Line2D;
-import java.awt.geom.Rectangle2D;
+import java.awt.*;
+import java.awt.geom.*;
 import java.awt.image.BufferedImage;
 
-import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
+import javax.swing.*;
 
 public class OutputPanel extends JPanel{
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-
-	public void output_panel_generator(int[][] answer, Integer NoV, String output_type) {
+	
+	public OutputPanel(int width, int height) {
+		setSize(width, height);
+	}
+	
+	public void output_panel_generator(int[][] answer, Integer NoV, String output_type, JPanel process) {
 		removeAll();
-		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-		add(new JLabel("Output:"));
+		
+		JPanel _p = new JPanel();
+		JScrollPane sp = new JScrollPane(_p, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		add(sp);
+		_p.setLayout(new BoxLayout(_p, BoxLayout.Y_AXIS));
+		_p.add(process);
+		_p.add(new JLabel("Output:"));
 		StringBuilder sb = new StringBuilder();
 		if(output_type.equals("SOP")) {
 			for (int[] _i : answer) {
@@ -52,8 +53,9 @@ public class OutputPanel extends JPanel{
 		}
 		JTextField tmp = new JTextField(sb.toString());
 		tmp.setFont(new Font("TimesRoman", Font.BOLD, 20));
-		add(tmp);
-		add(new JLabel(new ImageIcon(draw_logic_circuit(answer, NoV, output_type))));
+		_p.add(tmp);
+		_p.add(new JLabel(new ImageIcon(draw_logic_circuit(answer, NoV, output_type))));
+		
 		revalidate();
 	}
 	
