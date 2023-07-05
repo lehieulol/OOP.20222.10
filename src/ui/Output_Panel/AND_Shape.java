@@ -1,24 +1,24 @@
-package ui;
+package ui.Output_Panel;
 
 import java.awt.geom.*;
 import java.awt.*;
 
-public class OR_Shape implements Shape{
+public class AND_Shape implements Shape{
 	double startX, startY, input_size;	
 	Path2D.Double path;
 	double DISTANCE_BETWEEN_ROW = 25;
 	double SIZE = 50; 
 	
-	public OR_Shape(double startX, double startY, double input_size) {
+	public AND_Shape(double startX, double startY, double input_size) {
 		this.startX = startX;
 		this.startY = startY;
 		this.input_size = input_size;
 		path = new Path2D.Double();
-		path.moveTo(startX+SIZE, startY+input_size*DISTANCE_BETWEEN_ROW/2);
-		path.curveTo(startX+SIZE*0.75, startY+input_size*DISTANCE_BETWEEN_ROW*0.25, startX+SIZE/2, startY+input_size*DISTANCE_BETWEEN_ROW*0.1, startX-SIZE*0.2, startY);
-		path.curveTo(startX+SIZE*0.067, startY, startX+SIZE*0.067, startY+input_size*DISTANCE_BETWEEN_ROW, startX-SIZE*0.2, startY+input_size*DISTANCE_BETWEEN_ROW);
-		path.curveTo(startX+SIZE/2, startY+input_size*DISTANCE_BETWEEN_ROW*0.9, startX+SIZE*0.75, startY+input_size*DISTANCE_BETWEEN_ROW*0.75, startX+SIZE, startY+input_size*DISTANCE_BETWEEN_ROW/2);
-		
+		path.moveTo(startX+SIZE/2, startY);
+		path.lineTo(startX, startY);
+		path.lineTo(startX, startY+input_size*DISTANCE_BETWEEN_ROW);
+		path.lineTo(startX+SIZE/2, startY+input_size*DISTANCE_BETWEEN_ROW);
+		path.curveTo(startX+SIZE*1.167d, startY+input_size*DISTANCE_BETWEEN_ROW, startX+SIZE*1.167d, startY, startX+SIZE/2, startY);
 	}
 
 	@Override
