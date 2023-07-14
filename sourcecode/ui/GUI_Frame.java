@@ -44,7 +44,11 @@ public class GUI_Frame extends JFrame{
 		int[] truth_table = input.getTruthTable(output_type);
 		JPanel process = new JPanel();
 		int[][] answer = Solver.solve(NoV, truth_table, output_type, process);
-		output.output_panel_generator(answer, NoV, output_type, process);
+		int first_value = 0;
+		if((output_type.equals("SOP")&&truth_table.length>0)||(output_type.equals("POS")&&truth_table.length==0)) {
+			first_value = 1;
+		}
+		output.output_panel_generator(answer, NoV, output_type, process, first_value);
 	}
 	
 }
