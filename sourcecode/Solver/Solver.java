@@ -13,12 +13,10 @@ public class Solver {
 	 * @return 0 is written as 'A' and so on; if returned number >= num_of_variable, it is written as negative of its modulo of num_of_variable
 	 */
 	public static int[][] solve(Integer num_of_variable, int[] truth_table, String output_type, JPanel process_output){
-//		int t[] = {1,2,3};
-//		truth_table = t;
 		QuineMcCluskey start = new QuineMcCluskey();
 		ArrayList<ArrayList<Integer>> ret = start.result(truth_table, num_of_variable);
 		ArrayList<ArrayList<Integer>> bit = new ArrayList<ArrayList<Integer>>() ;
-		int[][] result = {{0,1,2},{0,1,3}};
+		int[][] result = {};
 		for(ArrayList<Integer>i: ret){
 			bit.add(start.implicantsToBin(i));
 		}
@@ -37,7 +35,7 @@ public class Solver {
 		ArrayList<Integer> temp;
 		for(ArrayList<Integer> i: bit) {
 			temp = new ArrayList<Integer>();
-			System.out.println(i);
+//			System.out.println(i);
 			for(int j=0; j<i.size(); j++) {
 				if(i.get(j)==1) {
 					temp.add(j);
@@ -52,13 +50,13 @@ public class Solver {
 		return result;
 		
 	}
-public static int[][] resultPOS(ArrayList<ArrayList<Integer>> bit){
+	public static int[][] resultPOS(ArrayList<ArrayList<Integer>> bit){
 		
 		ArrayList<ArrayList<Integer>> res = new ArrayList<ArrayList<Integer>>();
 		ArrayList<Integer> temp;
 		for(ArrayList<Integer> i: bit) {
 			temp = new ArrayList<Integer>();
-			System.out.println(i);
+//			System.out.println(i);
 			for(int j=0; j<i.size(); j++) {
 				if(i.get(j)==0) {
 					temp.add(j);

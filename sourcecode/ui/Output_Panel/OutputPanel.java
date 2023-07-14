@@ -3,6 +3,7 @@ package ui.Output_Panel;
 import java.awt.*;
 import java.awt.geom.*;
 import java.awt.image.BufferedImage;
+import java.util.Arrays;
 
 import javax.swing.*;
 
@@ -16,9 +17,8 @@ public class OutputPanel extends JPanel{
 		setSize(width, height);
 	}
 	
-	public void output_panel_generator(int[][] answer, Integer NoV, String output_type, JPanel process) {
+	public void output_panel_generator(int[][] answer, Integer NoV, String output_type, JPanel process, int first_value) {
 		removeAll();
-		
 		JPanel _p = new JPanel();
 		JScrollPane sp = new JScrollPane(_p, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		add(sp);
@@ -26,6 +26,31 @@ public class OutputPanel extends JPanel{
 		_p.add(process);
 		_p.add(new JLabel("Output:"));
 		StringBuilder sb = new StringBuilder();
+		int[] zero = {};
+		int index = 0;
+		for (int i = 0; i < answer.length; i++) {
+			if(!Arrays.equals(answer[i], zero)) {
+				answer[index++] = answer[i];
+			}
+		}
+		answer = Arrays.copyOf(answer, index);
+
+		System.out.print("Answer:\n");
+		for (int i = 0; i < answer.length; i++) {
+			System.out.print("-");
+			for(int j: answer[i]) {
+				System.out.print(" "+j);
+			}
+			System.out.println();
+		}
+		
+		if(answer.length==0) {
+			JTextField tmp = new JTextField("Separate: "+first_value);
+			tmp.setFont(new Font("TimesRoman", Font.BOLD, 20));
+			_p.add(tmp);
+			revalidate();
+			return;
+		}
 		if(output_type.equals("SOP")) {
 			for (int[] _i : answer) {
 				for (int _j :_i) {
