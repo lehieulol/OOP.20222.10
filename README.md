@@ -2,7 +2,7 @@
 
 Clone project
 
-set build path to /sourcecode
+Set build path to /sourcecode
 
 Run /sourcecode/ui/Main.java
 
