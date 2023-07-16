@@ -3,7 +3,6 @@ package ui.Output_Panel;
 import java.awt.*;
 import java.awt.geom.*;
 import java.awt.image.BufferedImage;
-import java.util.Arrays;
 
 import javax.swing.*;
 
@@ -31,7 +30,7 @@ public class OutputPanel extends JPanel{
 		StringBuilder sb = new StringBuilder();
 		
 		if(answer.length==0) {
-			JTextField tmp = new JTextField("Separate: "+first_value);
+			JTextField tmp = new JTextField("Separate: y = "+first_value);
 			tmp.setFont(new Font("TimesRoman", Font.BOLD, 20));
 			_p.add(tmp);
 			revalidate();
