@@ -34,14 +34,35 @@ public class Solver {
 		FirstColumn a = new FirstColumn(r,num_of_variable);
 		TransformColumn aa = new TransformColumn(a, mT);
 		ArrayList<ArrayList<Integer>>ret = aa.getCollectPrimeImplicants();
-		System.out.println(ret);
 		
 		// Print Implicant
-		if (ret.size()>0) {
+		int count = 0;
+		for (ArrayList<Integer> i:ret) {
+			if(i.size()==0) {
+				continue;
+			}
+			ArrayList<Integer> tmp = Solver.implicantsToBin(i, num_of_variable);
+			int cnt = 0;
+			for (int j : tmp) {
+				if(j != Solver.NO_CARE) {
+					cnt = 1;
+					break;
+				}
+			}
+			if(cnt>0) {
+				count++;
+			}
+		}
+		if (count>0) {
 			process_output.setLayout(new BoxLayout(process_output, BoxLayout.Y_AXIS));
 			Object[][] table_data = new Object[ret.size()][2];
 			String[] column_name = {"Implicants", "Binaries"};
 			for (int i = 0; i < ret.size(); i++) {
+				if(ret.get(i).size()==0) {
+					ret.remove(i);
+					i--;
+					continue;
+				}
 				table_data[i][0] = ret.get(i).toString();
 				ArrayList<Integer> t = Solver.implicantsToBin(ret.get(i), num_of_variable);
 				StringBuilder sb = new StringBuilder();

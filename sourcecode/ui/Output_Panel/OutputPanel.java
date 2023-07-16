@@ -3,6 +3,7 @@ package ui.Output_Panel;
 import java.awt.*;
 import java.awt.geom.*;
 import java.awt.image.BufferedImage;
+import java.util.Arrays;
 
 import javax.swing.*;
 
@@ -17,7 +18,7 @@ public class OutputPanel extends JPanel{
 		setLayout(new BorderLayout());
 	}
 	
-	public void output_panel_generator(int[][] answer, Integer NoV, String output_type, JPanel process, int first_value) {
+	public void output_panel_generator(int[][] answer, Integer NoV, String output_type, JPanel process) {
 		removeAll();
 		JPanel _p = new JPanel();
 		JPanel x = new JPanel();
@@ -28,9 +29,14 @@ public class OutputPanel extends JPanel{
 		_p.add(process);
 		_p.add(new JLabel("Output:"));
 		StringBuilder sb = new StringBuilder();
-		
-		if(answer.length==0) {
-			JTextField tmp = new JTextField("Separate: y = "+first_value);
+		int[][] zero_1 = {{}};
+		boolean is_1 = Arrays.deepEquals(answer, zero_1);
+		if(answer.length==0 || is_1) {
+			int val = 0;
+			if ((output_type.equals("SOP") && is_1)||(output_type.equals("POS") && !is_1)) {
+				val = 1;
+			}
+			JTextField tmp = new JTextField("Separate: y = "+val);
 			tmp.setFont(new Font("TimesRoman", Font.BOLD, 20));
 			_p.add(tmp);
 			revalidate();
