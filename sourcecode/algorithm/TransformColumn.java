@@ -24,14 +24,14 @@ public class TransformColumn {
 		IntermediateColumn interColumn0 = new IntermediateColumn(firstColumn.getColumn(), this.getLengthOfBits());
 		IntermediateColumn interColumn = new IntermediateColumn(firstColumn.getColumn(), this.getLengthOfBits());
 		int i = 0;
-		while(true) {
+		while(i<6) {
 //			temp = new ArrayList<ArrayList<Integer>>();
 //			interColumn = new IntermediateColumn(interColumn0.getColumn(), this.getLengthOfBits());
 //			interColumn0 = new IntermediateColumn(interColumn0.getColumn(), this.getLengthOfBits());
 			
-			if(interColumn.getPrimeImplicants().size()==0 && i != 0) {
-				break;
-			}
+//			if(interColumn.getPrimeImplicants().size()==0 && i != 0) {
+//				break;
+//			}
 			for(ArrayList<Integer> k: interColumn.getPrimeImplicants()) {
 				Collections.sort(k);
 				if(this.collectPrimeImplicants.contains(k)) {
