@@ -104,7 +104,8 @@ public class IntermediateColumn extends Column {
 		}
 		return count;
 	}
-	
+
+	//getter methods
 	public ArrayList<ArrayList<Integer>> getPrimeImplicants() {
 		return primeImplicants;
 	}
