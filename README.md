@@ -1,3 +1,6 @@
 # OOP.20222.10
 
-Run scr/ui/Main.java
+Clone project
+set build path to /sourcecode
+Run /sourcecode/ui/Main.java
+Link video: https://youtu.be/b79iUkYHWIQ
