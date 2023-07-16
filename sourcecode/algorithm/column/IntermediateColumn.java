@@ -3,7 +3,7 @@ import java.util.ArrayList;
 
 import algorithm.MinTerm;
 public class IntermediateColumn extends Column {
-	
+	//atribute of IntermediateColumn
 	private ArrayList<ArrayList<Integer>> primeImplicants = new ArrayList<ArrayList<Integer>>(); // to save prime implicants
 	private ArrayList<ArrayList<Integer>> checkList = new ArrayList<ArrayList<Integer>>(); // to check prime implicants
 	
