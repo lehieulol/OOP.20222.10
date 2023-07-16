@@ -1,13 +1,14 @@
 package algorithm;
 import java.util.ArrayList;
 public class MinTerm {
+    //atribute of Minterm
     private int lengthOfBits;
     protected ArrayList<Integer> minTerms = new ArrayList<Integer>();
     public final int minterm;
     public final int noOfOnes;
     public final String NameOfMinterms;
     
-
+    //constructor with argument nameOfMinterms: String, lengthOfBits: Int
     public MinTerm(String nameOfMinterms, int lengthOfBits) {
         this.NameOfMinterms = nameOfMinterms;
         this.lengthOfBits = lengthOfBits;
@@ -20,7 +21,8 @@ public class MinTerm {
         this.minTerms.add(minterm);
         this.noOfOnes = this.noOfOnes(this.minTerms);
     }
-    
+
+    //Overloading with input minterm as an integer
     public MinTerm(int minterm, int lengthOfBits) {
         this.minterm = minterm;
         this.lengthOfBits = lengthOfBits;
@@ -34,7 +36,7 @@ public class MinTerm {
         this.noOfOnes = this.noOfOnes(this.minTerms);
     }
     
-    
+    //Method to count number of 1 in minterm binary representation
     public int noOfOnes(ArrayList<Integer> num) {
 		int count = 0;
 		for (int i=0; i<lengthOfBits; i++) {
@@ -44,10 +46,20 @@ public class MinTerm {
 		}
 		return count;
 	}
-    
+    //Method to convert from NameOfminterms to binary representation
+    public String convertMinterms(){
+        int decimalValue = Integer.parseInt(this.NameOfMinterms);
+        String binaryValue = Integer.toBinaryString(decimalValue);
+
+        // Pad with leading zeros to ensure the binary representation has the correct number of bits
+        while (binaryValue.length() < this.lengthOfBits) {
+            binaryValue = "0" + binaryValue;
+        }
+        return binaryValue;
+    }   
     
 
-
+    //getter methods to get the atributes
     public String getNameOfMinterms() {
         return this.NameOfMinterms;
     }
@@ -60,16 +72,7 @@ public class MinTerm {
         return lengthOfBits;
     }
 
-    public String convertMinterms(){
-        int decimalValue = Integer.parseInt(this.NameOfMinterms);
-        String binaryValue = Integer.toBinaryString(decimalValue);
-
-        // Pad with leading zeros to ensure the binary representation has the correct number of bits
-        while (binaryValue.length() < this.lengthOfBits) {
-            binaryValue = "0" + binaryValue;
-        }
-        return binaryValue;
-    }
+    
 
     
     public static void main(String[] args){
