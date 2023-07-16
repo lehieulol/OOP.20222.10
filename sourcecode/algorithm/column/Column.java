@@ -2,11 +2,12 @@ package algorithm.column;
 import java.util.ArrayList;
 
 public class Column {
-
+	//attribute of column
 	protected int numOfColumn;
 	protected int lengthOfBits;
 	protected ArrayList<ArrayList<ArrayList<Integer>>> column;
 
+	//getter and setter method
 	public int getNumOfColumn() {
 		return numOfColumn;
 	}
