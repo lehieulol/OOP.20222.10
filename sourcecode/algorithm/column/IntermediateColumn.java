@@ -85,7 +85,7 @@ public class IntermediateColumn extends Column {
 		}
 		return new ArrayList<Integer>();
 	}
-	
+	//method return number of 1 in binary representation
 	public int noOfOnes(ArrayList<Integer> num) {
 		int count = 0;
 		for (int i=0; i<lengthOfBits; i++) {
