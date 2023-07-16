@@ -117,7 +117,7 @@ public class TransformColumn {
 				}
 			}
 			if(count==tempo.get(i).size()) {
-				tempC.remove(tempo.get(i));
+				tempC.remove(tempo.get(i)); //if this group is represented by other group, we will remove
 			}
 			else result.add(tempo.get(i));
 		}
@@ -141,30 +141,7 @@ public class TransformColumn {
 		this.lengthOfBits = lengthOfBits;
 	}
 	
-	public static void main(String args[]) {
-		ArrayList<Integer> b = new ArrayList<Integer>();
-		b.add(0);
-//		b.add(2);
-//		b.add(1);
-		b.add(4);
-		b.add(5);
-		b.add(8);
-		b.add(7);
-//		b.add(10);
-		b.add(11);
-		b.add(12);
-		b.add(15);
-		ArrayList<MinTerm> c = new ArrayList<MinTerm>();
-		for(Integer k: b) {
-			int i = k;
-			c.add(new MinTerm(i,4));
-		}
-		FirstColumn a = new FirstColumn(c,4);
-		TransformColumn aa = new TransformColumn(a,b);
-		System.out.println(aa.collectPrimeImplicants);
-		System.out.println(aa.simplifyImplicants(aa.collectPrimeImplicants));
-	}
-
+	
 
 	public int getNoOfMinTerms() {
 		return noOfMinTerms;
