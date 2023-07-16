@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import algorithm.MinTerm;
 
 public class FirstColumn extends Column {
-
+	//atribute of Column
 	private ArrayList<MinTerm> minTerms;
 	private int numOfMinTerms;
-	
+	//FirstColumn constructor
 	public FirstColumn(ArrayList<MinTerm> minTerms, int lengthOfBits){
 		this.setMinTerms(minTerms);
 		this.setLengthOfBits(lengthOfBits);
@@ -15,7 +15,7 @@ public class FirstColumn extends Column {
 		this.setNumOfMinTerms(minTerms.size());
 	}
 	
-	
+	//method to divide group based on number of 1
 	public ArrayList<ArrayList<ArrayList<Integer>>> separate(ArrayList<MinTerm> list){
 		ArrayList<ArrayList<ArrayList<Integer>>> result = new ArrayList<ArrayList<ArrayList<Integer>>>();
 		for(int i = 0; i < this.lengthOfBits+1; i++) {
@@ -32,13 +32,25 @@ public class FirstColumn extends Column {
 	}
 	
 	
-
+        //getter and setter method
 	public ArrayList<MinTerm> getMinTerms() {
 		return minTerms;
 	}
 
 	public void setMinTerms(ArrayList<MinTerm> minTerms) {
 		this.minTerms = minTerms;
+	}
+	
+	
+
+
+	public int getNumOfMinTerms() {
+		return numOfMinTerms;
+	}
+
+
+	public void setNumOfMinTerms(int numOfMinTerms) {
+		this.numOfMinTerms = numOfMinTerms;
 	}
 	
 	public static void main(String[] args){
@@ -60,16 +72,4 @@ public class FirstColumn extends Column {
 		FirstColumn a = new FirstColumn(c,4);
 		System.out.println(a.getColumn());
 	}
-
-
-	public int getNumOfMinTerms() {
-		return numOfMinTerms;
-	}
-
-
-	public void setNumOfMinTerms(int numOfMinTerms) {
-		this.numOfMinTerms = numOfMinTerms;
-	}
-	
-	
 }
