@@ -1,8 +1,10 @@
 package Solver;
 
+import algorithm.*;
+import algorithm.column.FirstColumn;
+
 import javax.swing.JPanel;
 import java.util.ArrayList;
-import algorithm.QuineMcCluskey;
 
 public class Solver {
 	/**
@@ -13,12 +15,27 @@ public class Solver {
 	 * @return 0 is written as 'A' and so on; if returned number >= num_of_variable, it is written as negative of its modulo of num_of_variable
 	 */
 	public static int[][] solve(Integer num_of_variable, int[] truth_table, String output_type, JPanel process_output){
-		QuineMcCluskey start = new QuineMcCluskey();
-		ArrayList<ArrayList<Integer>> ret = start.result(truth_table, num_of_variable);
+//		int t[] = {1,2,3};
+//		truth_table = t;
+		
+		ArrayList<Integer> mT = new ArrayList<Integer>();
+		for (int i = 0; i< truth_table.length; i++) {
+			mT.add(truth_table[i]);
+		}
+		
+		ArrayList<MinTerm> r = new ArrayList<MinTerm>();
+		for(Integer k: mT) {
+			int i = k;
+			r.add(new MinTerm(i, num_of_variable));
+		}
+		FirstColumn a = new FirstColumn(r,num_of_variable);
+		TransformColumn aa = new TransformColumn(a, mT);
+		ArrayList<ArrayList<Integer>>ret = aa.getCollectPrimeImplicants();
+		System.out.println(ret);
 		ArrayList<ArrayList<Integer>> bit = new ArrayList<ArrayList<Integer>>() ;
-		int[][] result = {};
+		int[][] result = {{0,1,2},{0,1,3}};
 		for(ArrayList<Integer>i: ret){
-			bit.add(start.implicantsToBin(i));
+			bit.add(implicantsToBin(i, num_of_variable));
 		}
 		if(output_type.equals("SOP")) {
 			result = resultSOP(bit);
@@ -35,7 +52,7 @@ public class Solver {
 		ArrayList<Integer> temp;
 		for(ArrayList<Integer> i: bit) {
 			temp = new ArrayList<Integer>();
-//			System.out.println(i);
+			System.out.println(i);
 			for(int j=0; j<i.size(); j++) {
 				if(i.get(j)==1) {
 					temp.add(j);
@@ -50,13 +67,13 @@ public class Solver {
 		return result;
 		
 	}
-	public static int[][] resultPOS(ArrayList<ArrayList<Integer>> bit){
+public static int[][] resultPOS(ArrayList<ArrayList<Integer>> bit){
 		
 		ArrayList<ArrayList<Integer>> res = new ArrayList<ArrayList<Integer>>();
 		ArrayList<Integer> temp;
 		for(ArrayList<Integer> i: bit) {
 			temp = new ArrayList<Integer>();
-//			System.out.println(i);
+			System.out.println(i);
 			for(int j=0; j<i.size(); j++) {
 				if(i.get(j)==0) {
 					temp.add(j);
@@ -88,6 +105,41 @@ public class Solver {
             }
         }
 		return intArray;
-		
-	  }
+	}
+	public static ArrayList<Integer> implicantsToBin(ArrayList<Integer> implicants, int lengthOfBits){
+		ArrayList<Integer> result = new ArrayList<Integer>();
+		ArrayList<ArrayList<Integer>> temp = convertMinTerms(implicants, lengthOfBits);
+		int t;
+		boolean dif;
+		for(int j=0; j<lengthOfBits; j++) {
+			t = temp.get(0).get(j);
+			dif = false;
+			for(int i=1; i<temp.size(); i++) {
+				if(t != temp.get(i).get(j)) {
+					dif = true;
+					break;
+				}
+			}
+			if(dif) result.add(9);
+			else result.add(t);
+		}
+		return result;
+	}
+	public static ArrayList<ArrayList<Integer>> convertMinTerms(ArrayList<Integer> mint, int lengthOfBits) {
+		int t;
+		ArrayList<ArrayList<Integer>> result = new ArrayList<ArrayList<Integer>>();
+		for (int i = 0; i < mint.size(); i++) {
+			result.add(new ArrayList<Integer>());
+		}
+		for (int i = 0; i < mint.size(); i++) {
+			t = mint.get(i);
+			result.get(i).add(t);
+			for(int j = lengthOfBits; j>0; j--) {
+				result.get(i).add(0, t%2);
+				t = t/2;
+			}
+		}
+		return result;
+	}
+	
 } 
