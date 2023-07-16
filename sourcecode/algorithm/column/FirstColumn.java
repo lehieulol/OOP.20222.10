@@ -52,7 +52,7 @@ public class FirstColumn extends Column {
 	public void setNumOfMinTerms(int numOfMinTerms) {
 		this.numOfMinTerms = numOfMinTerms;
 	}
-	
+	//main to test this class
 	public static void main(String[] args){
 		ArrayList<Integer> b = new ArrayList<Integer>();
 		b.add(0);
