@@ -3,7 +3,7 @@ package Solver;
 import algorithm.*;
 import algorithm.column.FirstColumn;
 
-import javax.swing.JPanel;
+import javax.swing.*;
 import java.util.ArrayList;
 
 public class Solver {
@@ -14,6 +14,9 @@ public class Solver {
 	 * @param output_type "SOP" or "POS"
 	 * @return 0 is written as 'A' and so on; if returned number >= num_of_variable, it is written as negative of its modulo of num_of_variable
 	 */
+	
+	static final int NO_CARE = 9;
+	
 	public static int[][] solve(Integer num_of_variable, int[] truth_table, String output_type, JPanel process_output){
 //		int t[] = {1,2,3};
 //		truth_table = t;
@@ -32,6 +35,36 @@ public class Solver {
 		TransformColumn aa = new TransformColumn(a, mT);
 		ArrayList<ArrayList<Integer>>ret = aa.getCollectPrimeImplicants();
 		System.out.println(ret);
+		
+		// Print Implicant
+		if (ret.size()>0) {
+			process_output.setLayout(new BoxLayout(process_output, BoxLayout.Y_AXIS));
+			Object[][] table_data = new Object[ret.size()][2];
+			String[] column_name = {"Implicants", "Binaries"};
+			for (int i = 0; i < ret.size(); i++) {
+				table_data[i][0] = ret.get(i).toString();
+				ArrayList<Integer> t = Solver.implicantsToBin(ret.get(i), num_of_variable);
+				StringBuilder sb = new StringBuilder();
+				for(int j = 0; j < t.size(); j++) {
+					if (t.get(j) != Solver.NO_CARE) {
+						sb.append((char)('A'+j));
+						if (t.get(j)==0) {
+							sb.append('\u0305');
+						}
+						sb.append('.');
+					}
+				}
+				sb.delete(sb.length() - 1, sb.length());
+				table_data[i][1] = sb.toString();
+			}
+			JTable table = new JTable(table_data, column_name);
+			table.setDefaultEditor(Object.class, null);
+			process_output.add(new JLabel("Group:"));
+			process_output.add(table.getTableHeader());
+			process_output.add(table);
+		}
+		//
+		
 		ArrayList<ArrayList<Integer>> bit = new ArrayList<ArrayList<Integer>>() ;
 		int[][] result = {{0,1,2},{0,1,3}};
 		for(ArrayList<Integer>i: ret){
@@ -120,7 +153,7 @@ public static int[][] resultPOS(ArrayList<ArrayList<Integer>> bit){
 					break;
 				}
 			}
-			if(dif) result.add(9);
+			if(dif) result.add(NO_CARE);
 			else result.add(t);
 		}
 		return result;

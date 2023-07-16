@@ -15,34 +15,20 @@ public class OutputPanel extends JPanel{
 	
 	public OutputPanel(int width, int height) {
 		setSize(width, height);
+		setLayout(new BorderLayout());
 	}
 	
 	public void output_panel_generator(int[][] answer, Integer NoV, String output_type, JPanel process, int first_value) {
 		removeAll();
 		JPanel _p = new JPanel();
-		JScrollPane sp = new JScrollPane(_p, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		JPanel x = new JPanel();
+		x.add(_p);
+		JScrollPane sp = new JScrollPane(x, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 		add(sp);
 		_p.setLayout(new BoxLayout(_p, BoxLayout.Y_AXIS));
 		_p.add(process);
 		_p.add(new JLabel("Output:"));
 		StringBuilder sb = new StringBuilder();
-		int[] zero = {};
-		int index = 0;
-		for (int i = 0; i < answer.length; i++) {
-			if(!Arrays.equals(answer[i], zero)) {
-				answer[index++] = answer[i];
-			}
-		}
-		answer = Arrays.copyOf(answer, index);
-
-		System.out.print("Answer:\n");
-		for (int i = 0; i < answer.length; i++) {
-			System.out.print("-");
-			for(int j: answer[i]) {
-				System.out.print(" "+j);
-			}
-			System.out.println();
-		}
 		
 		if(answer.length==0) {
 			JTextField tmp = new JTextField("Separate: "+first_value);
